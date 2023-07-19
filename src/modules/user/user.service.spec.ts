@@ -1,5 +1,6 @@
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../../schema/user.schema';
 import { CreateUserDto } from './dto/createUserDto';
@@ -44,12 +45,22 @@ describe('UserService', () => {
         password: "<PASSWORD>",
         phone: "123456789"
       }
+
+      const salt = "ajslfoeirker34k34jlk";
+
+      jest.spyOn(bcrypt, "genSalt").mockReturnValueOnce(salt);
+
+      jest.spyOn(bcrypt, "hash").mockReturnValueOnce(salt);
+
       jest.spyOn(service, "constructCreateUserObj").mockReturnValueOnce(createUserDto);
 
       const user = await service.create(createUserDto)
-      expect(service.constructCreateUserObj).toHaveBeenCalledWith(createUserDto);
+      expect(service.constructCreateUserObj).toHaveBeenCalledWith(createUserDto, salt);
+
       expect(userModel.create).toHaveBeenCalledWith(createUserDto);
-      expect(user).toEqual(createUserDto)
+      expect(user).toEqual(createUserDto);
+      expect(bcrypt.genSalt).toHaveBeenCalled();
+      expect(bcrypt.hash).toHaveBeenCalledWith(createUserDto.password, salt)
     })
   })
 });
