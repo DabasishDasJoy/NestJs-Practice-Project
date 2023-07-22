@@ -11,7 +11,6 @@ export class UserController {
 
     @Post()
     async createUser(@Body() createUser: CreateUserDto): Promise<IUser> {
-        const uri = process.env.mongo_connection_uri
         return await this.userService.create(createUser);
     }
 }
