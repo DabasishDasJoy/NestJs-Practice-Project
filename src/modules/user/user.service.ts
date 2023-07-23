@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Model } from 'mongoose';
-import { IUser } from 'src/interfaces/user.interface';
-import { User, UserDocument } from '../../schema/user.schema';
+import { IUser, IUserKey } from 'src/interfaces/user.interface';
+
+import { InjectModel, Model } from 'nestjs-dynamoose';
 import { CreateUserDto } from './dto/createUserDto';
 
 @Injectable()
 export class UserService {
     constructor(
-        @InjectModel(User.name)
-        private readonly userModel: Model<UserDocument>
+        @InjectModel("User")
+        private readonly userModel: Model<IUser, IUserKey>
     ) { }
 
 
@@ -21,13 +20,20 @@ export class UserService {
         const createUserObj = this.constructCreateUserObj(createUser, hashedPassword);
 
 
-        const createduser = await this.userModel.create(createUserObj);
+        const createdUser: IUser = await this.userModel.create(createUserObj);
 
-        return createduser;
+        return createdUser;
     }
 
+    async getAll(): Promise<IUser[]> {
+        const users = await this.userModel.scan().exec();
+
+
+        return users;
+    }
     constructCreateUserObj(createUser: CreateUserDto, hashedPassword: string): IUser {
         return {
+            id: "aj3k4j32kj42k3j4lk2j3432kl4",
             name: createUser.name ?? "",
             email: createUser.email ?? "",
             phone: createUser.phone ?? "",

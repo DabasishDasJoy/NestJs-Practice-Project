@@ -1,19 +1,10 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Schema } from "dynamoose";
 
-export type UserDocument = User & Document & { _id: string };
-@Schema()
-export class User {
-    @Prop({ required: true })
-    name: string;
 
-    @Prop({ required: true })
-    email: string;
-
-    @Prop({ required: true })
-    phone: string;
-
-    @Prop({ required: true })
-    password: string;
-}
-
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = new Schema({
+    id: { type: String, hashKey: true },
+    name: { type: String },
+    email: { type: String },
+    phone: { type: String },
+    password: { type: String },
+})
