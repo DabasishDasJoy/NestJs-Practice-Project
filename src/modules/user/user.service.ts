@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { IUser, IUserKey } from 'src/interfaces/user.interface';
 
 import { InjectModel, Model } from 'nestjs-dynamoose';
+import { Utils } from 'src/helpers/Utils';
 import { CreateUserDto } from './dto/createUserDto';
 
 @Injectable()
@@ -28,12 +29,11 @@ export class UserService {
     async getAll(): Promise<IUser[]> {
         const users = await this.userModel.scan().exec();
 
-
         return users;
     }
     constructCreateUserObj(createUser: CreateUserDto, hashedPassword: string): IUser {
         return {
-            id: "aj3k4j32kj42k3j4lk2j3432kl4",
+            id: Utils.getUniqueId(),
             name: createUser.name ?? "",
             email: createUser.email ?? "",
             phone: createUser.phone ?? "",
