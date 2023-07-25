@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { IUser, IUserKey } from 'src/interfaces/user.interface';
-
 import { InjectModel, Model } from 'nestjs-dynamoose';
+import { IUser, IUserKey } from 'src/interfaces/user.interface';
 import { CreateUserDto } from './dto/createUserDto';
 
 @Injectable()
